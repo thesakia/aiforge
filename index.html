@@ -273,7 +273,15 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email })
-            }).catch(() => {}); // email déjà inscrit ou erreur réseau = on ignore, le mail a déjà été envoyé
+            }).catch(() => {});
+
+            // Notif n8n — déclenche le workflow Gmail
+            const N8N_WEBHOOK = 'https://ftstreammate.app.n8n.cloud/webhook/ai-forge-prospect';
+            fetch(N8N_WEBHOOK, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, source: 'AI Forge', timestamp: new Date().toISOString() })
+            }).catch(() => {});
 
             document.getElementById('email-step').classList.add('hidden');
             const codeStep = document.getElementById('code-step');
